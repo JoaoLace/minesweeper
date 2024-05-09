@@ -21,4 +21,6 @@ void tile::init(sf::Vector2f position)
     sprite.setOutlineColor(sf::Color::Black);
     sprite.setOutlineThickness(1.f);
     sprite.setPosition(position);
+
+    clicked = false;
 }

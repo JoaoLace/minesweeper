@@ -27,6 +27,7 @@ public:
     sf::RectangleShape sprite;
     sf::Text numberOfBombs;
     bool isBomb;
+    bool clicked;
     int bombsArround;
     int x;
     int y;
@@ -48,6 +49,8 @@ private:
     void initTiles();
     void update();
     void updateEvents();
+    void updateTiles();
+    void updateClick(int x, int y);
     void render();
     void renderTiles();
     void renderNumbers();

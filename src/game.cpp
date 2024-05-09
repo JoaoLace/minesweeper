@@ -68,7 +68,7 @@ void game::initTiles()
             else
             {
                 temp.isBomb = true;
-                temp.sprite.setFillColor(sf::Color::Red);
+                // temp.sprite.setFillColor(sf::Color::Red);
             }
             tiles->push_back(temp);
         }
@@ -82,6 +82,7 @@ game::~game()
 void game::update()
 {
     updateEvents();
+    updateTiles();
 }
 void game::updateEvents()
 {
@@ -93,8 +94,40 @@ void game::updateEvents()
             window->close();
             gameRunning = false;
         }
+        if (event.type == sf::Event::MouseButtonPressed)
+        {
+            if (event.mouseButton.button == sf::Mouse::Left)
+            {
+                int x = event.mouseButton.x / tileSize;
+                int y = event.mouseButton.y / tileSize;
+                updateClick(x, y);
+            }
+        }
     }
 }
+void game::updateTiles()
+{
+    for (size_t w = 0; w < field_width; w++)
+    {
+        for (size_t h = 0; h < field_height; h++)
+        {
+            int index = returnIndex(w,h);
+            if (tiles->at(index).isBomb and tiles->at(index).clicked)
+                {
+                    tiles->at(index).sprite.setFillColor(sf::Color::Red);
+                }
+        }
+    }
+}
+void game::updateClick(int x, int y)
+{
+    if (x >= 0 && x < field_width && y >= 0 && y < field_height)
+    {
+        int index = returnIndex(x, y);
+        tiles->at(index).clicked = true;
+    }
+}
+
 void game::render()
 {
     window->clear();
@@ -106,6 +139,7 @@ void game::renderTiles()
 {
     for (const auto &tile : *tiles)
     {
+
         window->draw(tile.sprite);
     }
 }
@@ -113,7 +147,10 @@ void game::renderNumbers()
 {
     for (const auto &tile : *tiles)
     {
-        window->draw(tile.numberOfBombs);
+        if (tile.clicked)
+        {
+            window->draw(tile.numberOfBombs);
+        }
     }
 }
 void game::run()
