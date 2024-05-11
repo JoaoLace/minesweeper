@@ -11,6 +11,7 @@ void game::init()
     initFont();
     initWindow();
     initField();
+    initSound();
     initTiles();
     initFlag();
     calculateAllBombs();
@@ -18,14 +19,19 @@ void game::init()
 void game::initFlag()
 {
     flags = new std::vector<sf::Sprite>();
-    if (!flagTexture.loadFromFile("./assets/flag.png"))
+    if (!flagTexture.loadFromFile("../assets/flag.png"))
     {
         std::cout << "ERROR: Could not load image from file: ./assets/flag.pn";
     }
 }
+void game::initSound()
+{
+    sb_bomb.loadFromFile("../assets/bomb.wav");
+    s_bombS.setBuffer(sb_bomb);
+}
 void initFont()
 {
-    if (!font.loadFromFile("./assets/JetBrainsMono-Bold-Italic.ttf"))
+    if (!font.loadFromFile("../assets/JetBrainsMono-Bold-Italic.ttf"))
     {
         std::cout << "ERROR: Could not load font from file: ./assets/JetBrainsMono-Bold-Italic.ttf";
     }
@@ -34,14 +40,17 @@ void game::initWindow()
 {
     window = new sf::RenderWindow(window_size, "Minesweeper", sf::Style::Titlebar);
     window->setFramerateLimit(30);
-    window->setPosition(sf::Vector2i(500, 500));
+    window->setPosition(sf::Vector2i(500, 100));
 }
 void game::initVars()
 {
     gameRunning = true;
-    maxBombs = 0.3 * (field_width * field_height);
+    gameMode = 3;
+    maxBombs = (0.1 * gameMode) * (field_width * field_height);
     currentBombs = 0;
     changeColor = false;
+    gameStarted = false;
+    lostBool = false;
 }
 void game::initField()
 {
@@ -74,12 +83,12 @@ void game::initTiles()
             temp.y = h;
             if (control == 0)
             {
-                temp.sprite.setFillColor(sf::Color(167, 217, 72, 255));
+                temp.sprite.setFillColor(light_green);
                 control = 1;
             }
             else
             {
-                temp.sprite.setFillColor(sf::Color(142, 204, 57, 255));
+                temp.sprite.setFillColor(green);
                 control = 0;
             }
             if (field[w][h] == '#')
@@ -105,9 +114,9 @@ void game::update()
     updateEvents();
     updateTiles();
     if (testWin())
-        {
-            gameRunning = !gameRunning;
-        }
+    {
+        gameRunning = !gameRunning;
+    }
 }
 void game::updateEvents()
 {
@@ -147,23 +156,16 @@ void game::updateTiles()
             if (tiles->at(index).isBomb and tiles->at(index).clicked)
             {
                 tiles->at(index).sprite.setFillColor(sf::Color::Red);
+                if (!lostBool)
+                {
+                    lostBool = true;
+                    lost();
+                }
             }
-            // else if (!tiles->at(index).isBomb and tiles->at(index).clicked)
-            // {
-            //     if (control == 0)
-            //     {
-            //         tiles->at(index).sprite.setFillColor(sf::Color(215, 184, 153, 255));
-            //         control = 1;
-            //     }
-            //     else
-            //     {
-            //         tiles->at(index).sprite.setFillColor(sf::Color(229, 194, 159, 255));
-            //         control = 0;
-            //     }
-            // }
         }
     }
 }
+
 void game::updateClick(int x, int y)
 {
     if (x >= 0 && x < field_width && y >= 0 && y < field_height)
@@ -207,10 +209,19 @@ void game::renderNumbers()
 }
 void game::run()
 {
+
+    initInitalScreen();
     while (gameRunning)
     {
-        update();
-        render();
+        if (gameStarted)
+        {
+            update();
+            render();
+        }
+        else if (!gameStarted)
+        {
+            inicialScreen();
+        }
     }
 }
 int game::calculateBombs(int x, int y)
@@ -297,15 +308,13 @@ void game::handleClick(int x, int y)
 {
     int index = returnIndex(x, y);
     tiles->at(index).clicked = true;
-    if (changeColor)
+    if (tiles->at(index).sprite.getFillColor() == light_green)
     {
-        changeColor = !changeColor;
-        tiles->at(index).sprite.setFillColor(sf::Color(215, 184, 153, 255));
+        tiles->at(index).sprite.setFillColor(light_brown);
     }
-    else if (!changeColor)
+    else if (tiles->at(index).sprite.getFillColor() == green)
     {
-        changeColor = !changeColor;
-        tiles->at(index).sprite.setFillColor(sf::Color(229, 194, 159, 255));
+        tiles->at(index).sprite.setFillColor(brown);
     }
     if (tiles->at(index).bombsArround != 0)
         return;
@@ -402,4 +411,47 @@ bool game::testWin()
             return false;
     }
     return true;
+}
+void game::lost()
+{
+    showBombs();
+    delete tiles;
+    delete window;
+    delete flags;
+
+    // Reinitialize game
+    init();
+    gameStarted = false;
+}
+
+void game::resetField()
+{
+    for (int i = 0; i < field_width; i++)
+    {
+        for (int j = 0; j < field_height; j++)
+        {
+            field[i][j] = '#';
+        }
+    }
+    currentBombs = 0;
+    initField();
+}
+void game::showBombs()
+{
+    for (int w = 0; w < field_width; w++)
+    {
+        for (int h = 0; h < field_height; h++)
+        {
+            int index = returnIndex(w, h);
+            if (tiles->at(index).isBomb)
+            {
+                tiles->at(index).sprite.setFillColor(sf::Color::Red);
+                render();
+                s_bombS.play();
+                sf::sleep(sf::milliseconds(500));
+            }
+        }
+    }
+    s_bombS.play();
+    sf::sleep(sf::milliseconds(2000));
 }
