@@ -16,7 +16,7 @@ void tile::init(sf::Vector2f position)
     numberOfBombs.setPosition(sf::Vector2f(position.x + (tileSize/4) + 2.4,position.y + (tileSize/4) ));
     
     sprite.setSize(sf::Vector2f(tileSize,tileSize));
-    sprite.setOutlineColor(sf::Color::Black);
+    sprite.setOutlineColor(black);
     sprite.setOutlineThickness(1.f);
     sprite.setPosition(position);
 

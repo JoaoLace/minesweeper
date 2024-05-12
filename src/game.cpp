@@ -26,8 +26,10 @@ void game::initFlag()
 }
 void game::initSound()
 {
-    sb_bomb.loadFromFile("../assets/bomb.wav");
+    sb_bomb.loadFromFile("../assets/bomb2.wav");
+    sb_win.loadFromFile ("../assets/bomb.wav");
     s_bombS.setBuffer(sb_bomb);
+    s_win.setBuffer(sb_win);
 }
 void initFont()
 {
@@ -115,7 +117,7 @@ void game::update()
     updateTiles();
     if (testWin())
     {
-        gameRunning = !gameRunning;
+        win();
     }
 }
 void game::updateEvents()
@@ -454,4 +456,20 @@ void game::showBombs()
     }
     s_bombS.play();
     sf::sleep(sf::milliseconds(2000));
+}
+void game::win()
+{
+    updateEvents();
+    renderFlags();
+    s_win.play();
+    window->draw(guiTexts[6]);
+    window->display();
+    s_win.play();
+    sf::sleep(sf::seconds(1.5));
+    delete tiles;
+    delete window;
+    delete flags;
+
+    init();
+    gameStarted = false;
 }

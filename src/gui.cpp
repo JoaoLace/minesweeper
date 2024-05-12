@@ -1,6 +1,6 @@
 #include "../lib/game.h"
 
-typedef enum gamemode{
+enum gamemode{
     easy = 1,
     medium = 2,
     hard = 3
@@ -12,12 +12,13 @@ bool pointInRect(sf::Vector2f point, sf::FloatRect rect);
 
 void game::initInitalScreen()
 {
-    guiTexts[0] = (createText(60, {200, 0}, sf::Color::Black, "MINESWEEPER"));
-    guiTexts[1] = (createText(50, {200, 200}, sf::Color::Black, "-> EASY"));
-    guiTexts[2] = (createText(50, {200, 300}, sf::Color::Black, "-> MEDIUM"));
-    guiTexts[3] = (createText(50, {200, 400}, sf::Color::Black, "-> HARD"));
-    guiTexts[4] = (createText(50, {200, 500}, sf::Color::Black, "-> CREDITS"));
-    guiTexts[5] = (createText(50, {200, 600}, sf::Color::Black, "-> EXIT"));
+    guiTexts[0] = (createText(60, {200, 0}, black, "MINESWEEPER"));
+    guiTexts[1] = (createText(50, {200, 200}, black, "-> EASY"));
+    guiTexts[2] = (createText(50, {200, 300}, black, "-> MEDIUM"));
+    guiTexts[3] = (createText(50, {200, 400}, black, "-> HARD"));
+    guiTexts[4] = (createText(50, {200, 500}, black, "-> CREDITS"));
+    guiTexts[5] = (createText(50, {200, 600}, black, "-> EXIT"));
+    guiTexts[6] = (createText(70, {window_width/2 - 200,window_height/2 - 70},black, "YOU WON!!!"));
 }
 
 void game::inicialScreen()
@@ -34,7 +35,7 @@ void game::updateInitalScreen()
         if (event.type == sf::Event::Closed)
         {
             window->close();
-            gameRunning = false;
+            return; // Retorna imediatamente, não encerrando o loop principal
         }
     }
     sf::Vector2f mousePos = getMousePos(*window);
@@ -63,10 +64,11 @@ void game::updateInitalScreen()
                     gameMode = hard;
                     break;
                 case 4:
+                    // Trate outros botões se necessário
                     break;
                 case 5:
                     gameRunning = false;
-                    break;
+                    return; // Retorna imediatamente, não encerrando o loop principal
                 default:
                     break;
                 }
@@ -74,10 +76,11 @@ void game::updateInitalScreen()
         }
         else
         {
-            guiTexts[i].setFillColor(sf::Color::Black);
+            guiTexts[i].setFillColor(black);
         }
     }
 }
+
 
 void game::renderInitalScreen()
 {
@@ -89,9 +92,9 @@ void game::renderInitalScreen()
 
 void game::renderTextInitalScreen()
 {
-    for (sf::Text text : guiTexts)
+    for (int i = 0; i < 6; i++)
     {
-        window->draw(text);
+        window->draw(guiTexts[i]);
     }
 }
 
