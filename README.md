@@ -19,26 +19,26 @@ Ubuntu Linux x64
 2. Cd to build
 
 ```bash
-~/dev/cpp/minesweeper$ cd build
-~/dev/cpp/minesweeper/build$
+~/yourpath/minesweeper$ cd build
+~/yourpath/minesweeper/build$
 ```
 
 3. Build
 
 ```bash
-~/dev/cpp/minesweeper/build$ make
+~/yourpath/minesweeper/build$ make
 ```
 
 3. Build
 
 ```bash
-~/dev/cpp/minesweeper/build$ make
+~/yourpath/minesweeper/build$ make
 ```
 
 4. Run the executable 
 
 ```bash
-~/dev/cpp/minesweeper/build$ ./Minesweeper
+~/yourpath/minesweeper/build$ ./Minesweeper
 ```
 
 #### TODO
