@@ -64,11 +64,11 @@ void game::updateInitalScreen()
                     gameMode = hard;
                     break;
                 case 4:
-                    // Trate outros botões se necessário
+                    // TODO: Add credits
                     break;
                 case 5:
                     gameRunning = false;
-                    return; // Retorna imediatamente, não encerrando o loop principal
+                    return; 
                 default:
                     break;
                 }

@@ -23,6 +23,15 @@ void game::initFlag()
     {
         std::cout << "ERROR: Could not load image from file: ./assets/flag.pn";
     }
+    flagControl.setTexture(flagTexture);
+    flagControl.setPosition(0,0);
+    flagControl.setScale(0.3,0.3);
+    
+
+    tx_numberOfFlags.setFont(font);
+    tx_numberOfFlags.setCharacterSize(24);
+    tx_numberOfFlags.setPosition(30,0);
+    tx_numberOfFlags.setFillColor(sf::Color::White);
 }
 void game::initSound()
 {
@@ -53,6 +62,8 @@ void game::initVars()
     changeColor = false;
     gameStarted = false;
     lostBool = false;
+    maxFlags = 0;
+    currentFlags = 0;
 }
 void game::initField()
 {
@@ -71,6 +82,7 @@ void game::initField()
             }
         }
     }
+    maxFlags = currentBombs;
 }
 void game::initTiles()
 {
@@ -182,7 +194,18 @@ void game::render()
     renderTiles();
     renderNumbers();
     renderFlags();
+    renderNumberOfFlags();
     window->display();
+}
+void game::renderNumberOfFlags()
+{
+    int num  = maxFlags-currentFlags;
+    std::string str = "x" + std::to_string(num);
+    tx_numberOfFlags.setString(str);
+
+    window->draw(flagControl);
+    window->draw(tx_numberOfFlags);
+
 }
 void game::renderFlags()
 {
@@ -346,7 +369,6 @@ void game::handleClick(int x, int y)
 
 void game::setTileTextColor(int index)
 {
-    // TODO: add more colors
     int num = tiles->at(index).bombsArround;
     switch (num)
     {
@@ -373,7 +395,18 @@ void game::setTileTextColor(int index)
         tiles->at(index).numberOfBombs.setString(std::to_string(num));
         tiles->at(index).numberOfBombs.setFillColor(sf::Color::Yellow);
         break;
-
+    case 6:
+        tiles->at(index).numberOfBombs.setString(std::to_string(num));
+        tiles->at(index).numberOfBombs.setFillColor(light_green);
+        break;
+    case 7:
+        tiles->at(index).numberOfBombs.setString(std::to_string(num));
+        tiles->at(index).numberOfBombs.setFillColor(pink);
+        break;
+    case 8:
+        tiles->at(index).numberOfBombs.setString(std::to_string(num));
+        tiles->at(index).numberOfBombs.setFillColor(orange);
+        break;
     default:
         break;
     }
@@ -381,6 +414,7 @@ void game::setTileTextColor(int index)
 void game::createFlag(int x, int y)
 {
     tiles->at(returnIndex(x, y)).flaged = true;
+    currentFlags++;
     sf::Sprite temp;
     temp.setTexture(flagTexture);
     temp.setPosition(tiles->at(returnIndex(x, y)).sprite.getPosition());
@@ -402,6 +436,7 @@ void game::testFlag(int x, int y)
 void game::removeFlag(int x, int y)
 {
     tiles->at(returnIndex(x, y)).flaged = false;
+    currentFlags--;
     int index = returnIndex(x, y);
     flags->erase(flags->begin() + index);
 }
@@ -444,13 +479,13 @@ void game::showBombs()
     {
         for (int h = 0; h < field_height; h++)
         {
-            int index = returnIndex(w, h);
+            int index = returnIndex(h, w);
             if (tiles->at(index).isBomb)
             {
                 tiles->at(index).sprite.setFillColor(sf::Color::Red);
                 render();
                 s_bombS.play();
-                sf::sleep(sf::milliseconds(500));
+                sf::sleep(sf::milliseconds(1000));
             }
         }
     }

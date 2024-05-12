@@ -16,6 +16,9 @@
 #define light_brown sf::Color(215, 184, 153, 255)
 #define brown sf::Color(229, 194, 159, 255)
 #define black sf::Color::Black
+#define pink sf::Color(210,122,245,255)
+#define orange sf::Color(245,80,0,255)
+#define light_green sf::Color(245,221,0,255)
 
 extern sf::Font font;
 void initFont();
@@ -48,16 +51,20 @@ private:
     bool gameStarted;
     std::vector<tile> *tiles;
     std::vector<sf::Sprite> *flags;
-    sf::Font font;
+    // sf::Font font;
     sf::Texture flagTexture;
     sf::Text guiTexts [7];
     sf::SoundBuffer sb_bomb;
     sf::SoundBuffer sb_win;
     sf::Sound s_win;
     sf::Sound s_bombS;
+    sf::Sprite flagControl;
+    sf::Text tx_numberOfFlags;
     int maxBombs;
     int currentBombs;
     int gameMode;
+    int maxFlags;
+    int currentFlags;
     bool changeColor;
     bool lostBool;
     void init();
@@ -77,6 +84,7 @@ private:
     void renderTiles();
     void renderFlags();
     void renderNumbers();
+    void renderNumberOfFlags();
     void renderTextInitalScreen();
     void renderInitalScreen();
     int calculateBombs(int x, int y);
