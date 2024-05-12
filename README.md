@@ -29,12 +29,6 @@ Ubuntu Linux x64
 ~/yourpath/minesweeper/build$ make
 ```
 
-3. Build
-
-```bash
-~/yourpath/minesweeper/build$ make
-```
-
 4. Run the executable 
 
 ```bash
